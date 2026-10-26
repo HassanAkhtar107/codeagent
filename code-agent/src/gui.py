@@ -315,7 +315,7 @@ class CodeAgentGUI(tk.Tk):
             return "error"
         if "warning" in low or "budget" in low or "repair" in low:
             return "warning"
-        if msg.startswith("==") or msg.startswith("──"):
+        if msg.startswith("==") or msg.startswith("--"):
             return "accent"
         if msg.startswith("[") and "dim" not in msg:
             return "info"

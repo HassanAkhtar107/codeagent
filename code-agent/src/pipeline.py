@@ -82,7 +82,7 @@ class Pipeline:
         Returns a summary dict with keys: success, report, error.
         """
         self._log("=" * 60)
-        self._log("Code Agent – Starting pipeline")
+        self._log("Code Agent - Starting pipeline")
         self._log("=" * 60)
 
         plan: dict = {}
@@ -95,7 +95,7 @@ class Pipeline:
         try:
             # ── Phase 1: Parse ─────────────────────────────────────────
             self._check_stop()
-            self._log("\n── Phase 1: Parsing architecture documents …")
+            self._log("\n-- Phase 1: Parsing architecture documents ...")
             doc_parser = ArchitectureDocParser(self._doc_path)
             doc_data = doc_parser.parse()
             self._log(
@@ -112,7 +112,7 @@ class Pipeline:
 
             # ── Phase 2: Plan ──────────────────────────────────────────
             self._check_stop()
-            self._log("\n── Phase 2: Generating project plan …")
+            self._log("\n-- Phase 2: Generating project plan ...")
             planner = Planner(self._llm, self.cost_tracker, self._log)
             plan = planner.plan(doc_data, view_data)
             self._cost_cb(self.cost_tracker.live_status())
@@ -120,7 +120,7 @@ class Pipeline:
 
             # ── Phase 3: Generate ──────────────────────────────────────
             self._check_stop()
-            self._log("\n── Phase 3: Generating project files …")
+            self._log("\n-- Phase 3: Generating project files ...")
             generator = Generator(
                 llm_client=self._llm,
                 cost_tracker=self.cost_tracker,
@@ -145,7 +145,7 @@ class Pipeline:
             # ── Phase 4: Validate ──────────────────────────────────────
             if not stopped_early:
                 self._check_stop()
-                self._log("\n── Phase 4: Validating generated files …")
+                self._log("\n-- Phase 4: Validating generated files ...")
                 validator = Validator(
                     llm_client=self._llm,
                     cost_tracker=self.cost_tracker,
@@ -186,7 +186,7 @@ class Pipeline:
 
         self._log("\n" + self.cost_tracker.summary())
         self._log("\n" + "=" * 60)
-        self._log("Code Agent – Pipeline complete.")
+        self._log("Code Agent - Pipeline complete.")
         self._log("=" * 60)
 
         return {
@@ -204,7 +204,7 @@ class Pipeline:
         stopped_early: bool,
         stop_reason: str,
     ) -> str:
-        self._log("\n── Phase 5: Writing generation report …")
+        self._log("\n-- Phase 5: Writing generation report ...")
         try:
             report = write_report(
                 output_root=self.output_dir,
@@ -215,7 +215,7 @@ class Pipeline:
                 stopped_early=stopped_early,
                 stop_reason=stop_reason,
             )
-            self._log(f"   Report: {self.output_dir / 'GENERATION_REPORT.md'}")
+            self._log(f"   Report written: {self.output_dir / 'GENERATION_REPORT.md'}")
             return report
         except Exception as e:
             self._log(f"   Failed to write report: {e}")
