@@ -1,0 +1,42 @@
+# Code Agent – Git Ignore
+
+# User config (API key) – NEVER commit
+.code_agent_config.json
+~/.code_agent_config.json
+
+# LLM response cache
+llm_cache/
+
+# PyInstaller build artefacts
+dist/
+build/
+*.spec
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated project output (do not commit sample outputs)
+generated_output/
+output/
