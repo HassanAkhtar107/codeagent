@@ -1,0 +1,43 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+*.pyd
+.Python
+env/
+venv/
+.env
+.venv/
+pip-log.txt
+
+# Django
+db.sqlite3
+*.sqlite3
+mediafiles/
+staticfiles/
+.bash_history
+
+# Coverage & Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Terraform & Cloud
+.terraform
+postgres-data/
+certbot/
+
+# Node / Frontend
+node_modules/
+.next/
+/build
+yarn-error.log
+npm-debug.log*
+
+# IDE / OS
+.DS_Store
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+Thumbs.db

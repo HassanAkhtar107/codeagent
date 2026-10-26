@@ -1,0 +1,91 @@
+
+log:
+  level: DEBUG
+  filePath: "/var/log/traefik/traefik.log"
+
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  
+api:
+  dashboard: true
+  insecure: true
+
+entryPoints:
+  web:
+    # http
+    address: ':80'
+    http:
+      redirections:
+        entryPoint:
+          to: web-secure
+  
+  web-secure:
+    address: ':443'
+
+  flower:
+    address: ':5555'
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: '[EMAIL_ADDRESS]'
+      storage: /etc/traefik/acme/acme.json
+      httpChallenge:
+        entryPoint: web
+
+
+http:
+  routers:
+    frontend-secure-router:
+      rule: 'Host(`{{env "HOSTNAME"}}`) || Host(`www.{{env "HOSTNAME"}}`)'
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: frontend
+      tls:
+        certResolver: letsencrypt
+    
+    web-secure-router:
+      rule: 'Host(`{{env "HOSTNAME"}}`) && (PathPrefix(`/api`) || PathPrefix(`/admin`) || PathPrefix(`/static`) || PathPrefix(`/staticfiles`))'
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: web
+      tls:
+        certResolver: letsencrypt
+
+    flower-secure-router:
+      rule: 'Host(`{{env "HOSTNAME"}}`)'
+      entryPoints:
+        - flower
+      service: flower
+      tls:
+        certResolver: letsencrypt
+
+  middlewares:
+    csrf:
+      headers:
+        hostsProxyHeaders: ['X-CSRFToken']
+
+  services:
+    web:
+      loadBalancer:
+        servers:
+          - url: http://web:8000
+    
+    frontend:
+      loadBalancer:
+        servers:
+          - url: http://frontend:3000
+
+    flower:
+      loadBalancer:
+        servers:
+          - url: http://flower:5555
+
+providers:
+  file:
+    filename: /etc/traefik/traefik.yml
+    watch: true
